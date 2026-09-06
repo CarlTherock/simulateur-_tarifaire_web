@@ -108,26 +108,22 @@ html, body { font-family: var(--sans); background: var(--fond); color: var(--g1)
   display: flex; flex-direction: column; gap: 14px;
 }
 
-/* ── DESKTOP TABS (inside content) ── */
-.desktop-tabs {
-  display: flex; gap: 4px; flex-wrap: wrap;
-  background: var(--blanc); border-radius: var(--r);
-  padding: 6px; border: 1px solid var(--g4);
+/* desktop-tabs supprimés */
+
+/* ── Section headers (remplacent les onglets) ── */
+.section-header {
+  font-size: 12px; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--vert);
+  padding: 10px 0 6px;
+  border-top: 2px solid var(--vert-bdr);
+  margin-top: 4px;
   flex-shrink: 0;
 }
-.dtab {
-  flex: 1; padding: 8px 12px; min-width: 100px;
-  font-size: 12px; font-weight: 600; color: var(--g3);
-  border: none; background: transparent; border-radius: 8px;
-  cursor: pointer; white-space: nowrap; transition: all 0.15s;
-  font-family: var(--sans);
-}
-.dtab.active { background: var(--vert); color: var(--blanc); }
-.dtab:hover:not(.active) { background: var(--g5); color: var(--g1); }
 
 /* ── Tab pages ── */
 .tab-page { display: none; }
 .tab-page.active { display: flex; flex-direction: column; gap: 14px; }
+.content-section { display: flex; flex-direction: column; gap: 14px; }
 
 /* ── MOBILE: Bottom nav ── */
 .mobile-nav {
@@ -158,8 +154,7 @@ html, body { font-family: var(--sans); background: var(--fond); color: var(--g1)
   .mobile-nav      { display: flex; }
 
   /* Sur mobile: tab-pages cachés par défaut, JS les contrôle */
-  .tab-page        { display: none !important; }
-  .tab-page.active { display: flex !important; flex-direction: column; gap: 14px; }
+  /* tab-pages: gérés globalement */
 
   /* mpage = mobile-only pages (tp-params) */
   .mpage           { display: none; }
@@ -174,8 +169,7 @@ html, body { font-family: var(--sans); background: var(--fond); color: var(--g1)
 @media (min-width: 900px) {
   .mobile-nav         { display: none !important; }
   .mpage              { display: none; }        /* mpages (tp-params) cachés sur desktop */
-  .tab-page           { display: none; }        /* tab-pages cachés par défaut */
-  .tab-page.active    { display: flex; flex-direction: column; gap: 14px; }    /* seul l'onglet actif visible */
+  /* tab-pages: gérés globalement */
   .mobile-params-page { display: none !important; }
 }
 
@@ -584,13 +578,7 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
     <!-- ═══ CONTENT AREA ═══ -->
     <main class="panel-content">
 
-      <!-- DESKTOP TABS -->
-      <div class="desktop-tabs">
-        <button class="dtab active" onclick="showDTab('res',this)">📊 Résultats</button>
-        <button class="dtab" onclick="showDTab('tar',this)">🌐 Tarifs US</button>
-        <button class="dtab" onclick="showDTab('ca',this)">🍁 Tarifs CA</button>
-        <button class="dtab" onclick="showDTab('imp',this)">💼 Main-d'œuvre</button>
-      </div>
+
 
       <!-- ALERT (always visible) -->
       <div id="alert-zone"></div>
@@ -625,7 +613,7 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
       </div>
 
       <!-- ═══ TAB: RÉSULTATS ═══ -->
-      <div class="tab-page active" id="tp-res">
+      <div class="content-section" id="tp-res">
         <div class="carte-row c2">
           <div class="carte">
             <div class="carte-t">💰 Compte de résultat Windsor (M$ CAD)</div>
@@ -644,7 +632,8 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
       </div>
 
       <!-- ═══ TAB: TARIFS & VOLUME ═══ -->
-      <div class="tab-page" id="tp-tar">
+      <div class="section-header">🌐 Tarifs US &amp; Volume</div>
+      <div class="content-section" id="tp-tar">
         <div class="carte-row c2">
           <div class="carte">
             <div class="carte-t">📉 Volume projeté (élasticité-prix)</div>
@@ -663,7 +652,8 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
       </div>
 
       <!-- ═══ TAB: TARIFS CANADIENS ═══ -->
-      <div class="tab-page" id="tp-ca">
+      <div class="section-header">🍁 Contre-tarifs canadiens</div>
+      <div class="content-section" id="tp-ca">
         <div class="carte">
           <div class="carte-t">🍁 Contre-tarifs canadiens — Impact sur les coûts de Windsor</div>
           <div style="font-size:13px;line-height:1.65;margin-bottom:14px;padding:12px;background:var(--rouge-pale);border-radius:8px;border-left:4px solid var(--rouge)">
@@ -698,7 +688,8 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
       </div>
 
       <!-- ═══ TAB: MAIN-D'ŒUVRE ═══ -->
-      <div class="tab-page" id="tp-imp">
+      <div class="section-header">💼 Main-d'œuvre &amp; Convention</div>
+      <div class="content-section" id="tp-imp">
         <div class="carte">
           <div class="carte-t">🧮 Impact de la hausse salariale</div>
           <div class="imp-grid" id="imp-grid"></div>
