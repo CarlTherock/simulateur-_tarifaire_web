@@ -110,16 +110,6 @@ html, body { font-family: var(--sans); background: var(--fond); color: var(--g1)
 
 /* desktop-tabs supprimés */
 
-/* ── Section headers (remplacent les onglets) ── */
-.section-header {
-  font-size: 12px; font-weight: 800; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--vert);
-  padding: 10px 0 6px;
-  border-top: 2px solid var(--vert-bdr);
-  margin-top: 4px;
-  flex-shrink: 0;
-}
-
 /* ── Tab pages ── */
 .tab-page { display: none; }
 .tab-page.active { display: flex; flex-direction: column; gap: 14px; }
@@ -152,7 +142,6 @@ html, body { font-family: var(--sans); background: var(--fond); color: var(--g1)
   .panel-params    { display: none !important; }
   .panel-content   { padding: 12px 12px 90px; }
   .mobile-nav      { display: flex; }
-  .section-header  { display: none; }
   .content-section { display: none !important; }
   .content-section.active { display: flex !important; flex-direction: column; gap: 12px; }
   .mobile-params-page { display: none; }
@@ -629,7 +618,6 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
       </div>
 
       <!-- ═══ TAB: TARIFS & VOLUME ═══ -->
-      <div class="section-header">🌐 Tarifs US &amp; Volume</div>
       <div class="content-section" id="tp-tar">
         <div class="carte-row c2">
           <div class="carte">
@@ -649,7 +637,6 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
       </div>
 
       <!-- ═══ TAB: TARIFS CANADIENS ═══ -->
-      <div class="section-header">🍁 Contre-tarifs canadiens</div>
       <div class="content-section" id="tp-ca">
         <div class="carte">
           <div class="carte-t">🍁 Contre-tarifs canadiens — Impact sur les coûts de Windsor</div>
@@ -685,7 +672,6 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
       </div>
 
       <!-- ═══ TAB: MAIN-D'ŒUVRE ═══ -->
-      <div class="section-header">💼 Main-d'œuvre &amp; Convention</div>
       <div class="content-section" id="tp-imp">
         <div class="carte">
           <div class="carte-t">🧮 Impact de la hausse salariale</div>
