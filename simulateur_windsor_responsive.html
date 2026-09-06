@@ -127,7 +127,7 @@ html, body { font-family: var(--sans); background: var(--fond); color: var(--g1)
 
 /* ── Tab pages ── */
 .tab-page { display: none; }
-.tab-page.active { display: contents; }
+.tab-page.active { display: flex; flex-direction: column; gap: 14px; }
 
 /* ── MOBILE: Bottom nav ── */
 .mobile-nav {
@@ -159,11 +159,11 @@ html, body { font-family: var(--sans); background: var(--fond); color: var(--g1)
 
   /* Sur mobile: tab-pages cachés par défaut, JS les contrôle */
   .tab-page        { display: none !important; }
-  .tab-page.active { display: block !important; }
+  .tab-page.active { display: flex !important; flex-direction: column; gap: 14px; }
 
   /* mpage = mobile-only pages (tp-params) */
   .mpage           { display: none; }
-  .mpage.active    { display: block; }
+  .mpage.active    { display: flex; flex-direction: column; gap: 14px; }
 
   /* Mobile params */
   .mobile-params-page.active { display: block; }
@@ -175,7 +175,7 @@ html, body { font-family: var(--sans); background: var(--fond); color: var(--g1)
   .mobile-nav         { display: none !important; }
   .mpage              { display: none; }        /* mpages (tp-params) cachés sur desktop */
   .tab-page           { display: none; }        /* tab-pages cachés par défaut */
-  .tab-page.active    { display: contents; }    /* seul l'onglet actif visible */
+  .tab-page.active    { display: flex; flex-direction: column; gap: 14px; }    /* seul l'onglet actif visible */
   .mobile-params-page { display: none !important; }
 }
 
