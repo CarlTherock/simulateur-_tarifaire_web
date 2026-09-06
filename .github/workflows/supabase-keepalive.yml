@@ -1,0 +1,33 @@
+name: Supabase Keepalive — Simulateur Tarifaire
+
+on:
+  schedule:
+    - cron: '0 6 * * *'    # 6h UTC = 2h EST
+    - cron: '0 14 * * *'   # 14h UTC = 10h EST
+    - cron: '0 22 * * *'   # 22h UTC = 18h EST
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase (UPDATE réel)
+        env:
+          SUPABASE_URL: "https://ssubxfsfnyxuqqbyxcwx.supabase.co"
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          echo "Envoi keepalive à Supabase..."
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X PATCH \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            "$SUPABASE_URL/rest/v1/keepalive?id=eq.1" \
+            -d '{"pinged_at":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}')
+          echo "HTTP status: $RESPONSE"
+          if [ "$RESPONSE" = "200" ] || [ "$RESPONSE" = "204" ]; then
+            echo "✅ Keepalive réussi"
+          else
+            echo "⚠️ Statut inattendu: $RESPONSE"
+            exit 1
+          fi
