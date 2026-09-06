@@ -123,6 +123,7 @@ html, body { font-family: var(--sans); background: var(--fond); color: var(--g1)
 /* ── Tab pages ── */
 .tab-page { display: none; }
 .tab-page.active { display: flex; flex-direction: column; gap: 14px; }
+/* content-section: visible par défaut (desktop), géré par JS sur mobile */
 .content-section { display: flex; flex-direction: column; gap: 14px; }
 
 /* ── MOBILE: Bottom nav ── */
@@ -147,30 +148,26 @@ html, body { font-family: var(--sans); background: var(--fond); color: var(--g1)
 
 /* ═══ RESPONSIVE BREAKPOINT ════════════════════════════════════════════════ */
 @media (max-width: 899px) {
-  body { overflow: hidden; }
+  body             { overflow: hidden; }
   .panel-params    { display: none !important; }
-  .desktop-tabs    { display: none !important; }
-  .panel-content   { padding: 14px; padding-bottom: 90px; }
+  .panel-content   { padding: 12px 12px 90px; }
   .mobile-nav      { display: flex; }
-
-  /* Sur mobile: tab-pages cachés par défaut, JS les contrôle */
-  /* tab-pages: gérés globalement */
-
-  /* mpage = mobile-only pages (tp-params) */
-  .mpage           { display: none; }
-  .mpage.active    { display: flex; flex-direction: column; gap: 14px; }
-
-  /* Mobile params */
+  .section-header  { display: none; }
+  .content-section { display: none !important; }
+  .content-section.active { display: flex !important; flex-direction: column; gap: 12px; }
+  .mobile-params-page { display: none; }
   .mobile-params-page.active { display: block; }
-  .kpi-grid { grid-template-columns: 1fr 1fr !important; }
-  .kpi-full { grid-column: 1 / -1 !important; }
+  .kpi-grid  { grid-template-columns: 1fr 1fr !important; }
+  .kpi-full  { grid-column: 1 / -1 !important; }
+  .carte-row.c2, .carte-row.c3 { grid-template-columns: 1fr !important; }
+  .wf-lbl    { width: 105px !important; font-size: 10px !important; }
 }
 
 @media (min-width: 900px) {
   .mobile-nav         { display: none !important; }
-  .mpage              { display: none; }        /* mpages (tp-params) cachés sur desktop */
-  /* tab-pages: gérés globalement */
   .mobile-params-page { display: none !important; }
+  .mpage              { display: none !important; }
+  .content-section    { display: flex !important; flex-direction: column; gap: 14px; }
 }
 
 /* ═══ COMPONENTS ════════════════════════════════════════════════════════════ */
@@ -1219,14 +1216,21 @@ let curMPage = 'res';
 function showMPage(id, btn) {
   curMPage = id;
   if (window.innerWidth < 900) {
-    // Mobile: cacher tous les tab-pages et mpages, montrer le bon
-    document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
-    document.querySelectorAll('.mpage').forEach(p=>p.classList.remove('active'));
-    var target = document.getElementById('tp-'+id);
-    if (target) target.classList.add('active');
+    // Mobile: cacher toutes les sections et params, montrer la bonne
+    document.querySelectorAll('.content-section').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.mobile-params-page').forEach(function(p){ p.classList.remove('active'); });
+    if (id === 'params') {
+      // Onglet Paramètres — afficher le panel params mobile
+      var pp = document.getElementById('tp-params');
+      if (pp) pp.classList.add('active');
+    } else {
+      // Autres onglets — afficher la section de contenu
+      var target = document.getElementById('tp-'+id);
+      if (target) target.classList.add('active');
+    }
   }
-  document.querySelectorAll('.mnav-item').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+  document.querySelectorAll('.mnav-item').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1333,19 +1337,21 @@ function syncAll() {
 function applyResponsive() {
   var mobile = window.innerWidth < 900;
   if (!mobile) {
-    // Desktop: réinitialiser les tab-pages (CSS les gère via .tab-page.active)
-    // S'assurer que l'onglet actif est bien montré
-    var activeDTab = document.querySelector('.dtab.active');
-    if (activeDTab) activeDTab.click();
-    // Cacher la nav mobile params
-    var mpp = document.querySelector('.mobile-params-page');
-    if (mpp) mpp.classList.remove('active');
+    // Desktop: toutes les sections visibles (géré par CSS)
+    // Cacher les pages mobile
+    document.querySelectorAll('.mobile-params-page').forEach(function(p){ p.classList.remove('active'); });
   } else {
-    // Mobile: cacher tous les tab-pages, montrer le bon via curMPage
-    document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
-    document.querySelectorAll('.mpage').forEach(p=>p.classList.remove('active'));
-    var target = document.getElementById('tp-'+curMPage);
-    if (target) target.classList.add('active');
+    // Mobile: activer la section courante
+    document.querySelectorAll('.content-section').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.mobile-params-page').forEach(function(p){ p.classList.remove('active'); });
+    var activeBtn = document.querySelector('.mnav-item.active');
+    if (!activeBtn) {
+      // Activer le premier onglet par défaut
+      var firstBtn = document.querySelector('.mnav-item');
+      if (firstBtn) firstBtn.click();
+    } else {
+      showMPage(curMPage, activeBtn);
+    }
   }
 }
 
@@ -1465,6 +1471,11 @@ function showApp(email, token) {
   // Initialize the simulator
   if (typeof render === 'function') render();
   if (typeof applyResponsive === 'function') applyResponsive();
+  // Sur mobile: activer la section résultats par défaut
+  if (window.innerWidth < 900) {
+    var firstNav = document.querySelector('.mnav-item');
+    if (firstNav) firstNav.click();
+  }
 }
 
 function doLogout() {
