@@ -391,26 +391,7 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
   animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.user-badge {
-  position: fixed; top: 12px; right: 12px; z-index: 1000;
-  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 20px; padding: 5px 12px 5px 8px;
-  display: flex; align-items: center; gap: 8px;
-  font-size: 11px; color: white; display: none;
-}
-.user-badge.show { display: flex; }
-.user-avatar {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: rgba(255,255,255,0.25);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700;
-}
-.logout-btn {
-  background: none; border: none; color: rgba(255,255,255,0.7);
-  cursor: pointer; font-size: 11px; padding: 0;
-  font-family: var(--sans);
-}
-.logout-btn:hover { color: white; }
+/* user-badge intégré dans header */
 
 </style>
 </head>
@@ -423,8 +404,8 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
     <div class="auth-title">Simulateur Tarifaire Windsor</div>
     <div class="auth-sub">Accès réservé — Comité syndical CSN/FIM</div>
     <div class="auth-field">
-      <label>Adresse courriel</label>
-      <input type="email" id="auth-email" placeholder="votre@courriel.com" autocomplete="email">
+      <label>Identifiant</label>
+      <input type="text" id="auth-email" placeholder="admin" autocomplete="username">
     </div>
     <div class="auth-field">
       <label>Mot de passe</label>
@@ -436,12 +417,7 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
   </div>
 </div>
 
-<!-- USER BADGE (visible once logged in) -->
-<div class="user-badge" id="user-badge">
-  <div class="user-avatar" id="user-avatar">?</div>
-  <span id="user-email-display"></span>
-  <button class="logout-btn" onclick="doLogout()">Déconnexion</button>
-</div>
+<!-- user-badge intégré dans le header -->
 
 <div class="app">
 
@@ -454,7 +430,12 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
         <div class="hd-sub">Papier UFS — Canada vers USA · 2026</div>
       </div>
     </div>
-    <div class="hd-chip">Domtar P&amp;P</div>
+    <div id="user-badge" style="display:none;align-items:center;gap:8px;background:rgba(255,255,255,0.13);border:1px solid rgba(255,255,255,0.22);border-radius:20px;padding:5px 12px 5px 8px;font-size:11px;color:white">
+      <div id="user-avatar" style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">?</div>
+      <span id="user-email-display" style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <button onclick="doLogout()" style="background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-size:11px;font-family:var(--sans);padding:0;margin-left:4px">✕</button>
+    </div>
+    <div class="hd-chip" id="hd-chip-default">Domtar P&amp;P</div>
   </header>
 
   <!-- SCENARIO STRIP -->
@@ -1349,115 +1330,78 @@ window.addEventListener('resize', applyResponsive);
 render();
 applyResponsive();
 
-// ═══ SUPABASE AUTH ════════════════════════════════════════════════════════
-const SUPA_URL = 'https://ssubxfsfnyxuqqbyxcwx.supabase.co';
-const SUPA_KEY = 'sb_publishable_OKxzs9oE3BO9wu5BOWslFQ_evh9Blz2';
 
-// Session storage key
-const SESSION_KEY = 'windsor_sim_session';
+// ═══ AUTH LOCAL (SHA-256) ═════════════════════════════════════════════════
+// Identifiants: utilisateur=admin, mot de passe=admin
+// Hash SHA-256 — le mot de passe n'est jamais stocké en clair
+const CREDENTIALS = {
+  'admin': '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
+};
+const SESSION_KEY = 'windsor_sim_auth';
 
-// Check existing session on load
 window.addEventListener('DOMContentLoaded', function() {
-  checkSession();
-  // Allow Enter key on password field
-  document.getElementById('auth-password').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doLogin();
-  });
-  document.getElementById('auth-email').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') document.getElementById('auth-password').focus();
+  // Vérifier session existante
+  if (sessionStorage.getItem(SESSION_KEY) === 'ok') {
+    showApp(sessionStorage.getItem('windsor_sim_user') || 'admin');
+  } else {
+    document.getElementById('auth-overlay').classList.remove('hidden');
+  }
+  // Enter sur les champs
+  ['auth-password','auth-email'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') doLogin();
+    });
   });
 });
 
-async function checkSession() {
-  // Check stored session
-  var stored = sessionStorage.getItem(SESSION_KEY);
-  if (stored) {
-    try {
-      var sess = JSON.parse(stored);
-      // Verify token is still valid with Supabase
-      var res = await fetch(SUPA_URL + '/auth/v1/user', {
-        headers: {
-          'apikey': SUPA_KEY,
-          'Authorization': 'Bearer ' + sess.access_token
-        }
-      });
-      if (res.ok) {
-        var user = await res.json();
-        showApp(user.email, sess.access_token);
-        return;
-      }
-    } catch(e) {}
-  }
-  // No valid session — show login
-  document.getElementById('auth-overlay').classList.remove('hidden');
-}
-
 async function doLogin() {
-  var email    = document.getElementById('auth-email').value.trim();
-  var password = document.getElementById('auth-password').value;
-  var btn      = document.getElementById('auth-submit');
-  var errDiv   = document.getElementById('auth-error');
+  var user = (document.getElementById('auth-email').value || '').trim().toLowerCase();
+  var pwd  = document.getElementById('auth-password').value;
+  var btn  = document.getElementById('auth-submit');
+  var err  = document.getElementById('auth-error');
 
-  if (!email || !password) {
-    showError('Veuillez entrer votre courriel et mot de passe.');
+  if (!user || !pwd) {
+    showError('Veuillez entrer votre identifiant et mot de passe.');
     return;
   }
 
-  // Loading state
   btn.disabled = true;
-  btn.innerHTML = '<span class="auth-loading"></span>Connexion...';
-  errDiv.classList.remove('show');
+  btn.innerHTML = '<span class="auth-loading"></span>Vérification...';
+  err.classList.remove('show');
 
-  try {
-    var res = await fetch(SUPA_URL + '/auth/v1/token?grant_type=password', {
-      method: 'POST',
-      headers: {
-        'apikey': SUPA_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email: email, password: password })
-    });
+  // Hash SHA-256 du mot de passe saisi
+  var msgBuffer = new TextEncoder().encode(pwd);
+  var hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  var hashArray  = Array.from(new Uint8Array(hashBuffer));
+  var hashHex    = hashArray.map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
 
-    var data = await res.json();
-
-    if (!res.ok) {
-      var msg = data.error_description || data.msg || data.error || 'Courriel ou mot de passe incorrect.';
-      if (msg.includes('Invalid login')) msg = 'Courriel ou mot de passe incorrect.';
-      if (msg.includes('Email not confirmed')) msg = 'Courriel non confirmé. Contactez votre administrateur.';
-      showError(msg);
-      btn.disabled = false;
-      btn.innerHTML = 'Se connecter';
-      return;
-    }
-
-    // Success — store session
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-      access_token: data.access_token,
-      email: data.user.email
-    }));
-
-    showApp(data.user.email, data.access_token);
-
-  } catch(e) {
-    showError('Erreur de connexion. Vérifiez votre connexion internet.');
+  if (CREDENTIALS[user] && CREDENTIALS[user] === hashHex) {
+    // Succès — stocker session
+    sessionStorage.setItem(SESSION_KEY, 'ok');
+    sessionStorage.setItem('windsor_sim_user', user);
+    showApp(user);
+  } else {
+    showError('Identifiant ou mot de passe incorrect.');
     btn.disabled = false;
     btn.innerHTML = 'Se connecter';
   }
 }
 
-function showApp(email, token) {
-  // Hide overlay
+function showApp(user) {
   document.getElementById('auth-overlay').classList.add('hidden');
-  // Show user badge in header
+  // Badge dans le header
   var badge = document.getElementById('user-badge');
-  badge.classList.add('show');
-  var initial = email.charAt(0).toUpperCase();
-  document.getElementById('user-avatar').textContent = initial;
-  document.getElementById('user-email-display').textContent = email;
-  // Initialize the simulator
+  if (badge) badge.style.display = 'flex';
+  var chip = document.getElementById('hd-chip-default');
+  if (chip) chip.style.display = 'none';
+  var av = document.getElementById('user-avatar');
+  var em = document.getElementById('user-email-display');
+  if (av) av.textContent = user.charAt(0).toUpperCase();
+  if (em) em.textContent = user;
+  // Initialiser le simulateur
   if (typeof render === 'function') render();
   if (typeof applyResponsive === 'function') applyResponsive();
-  // Sur mobile: activer la section résultats par défaut
   if (window.innerWidth < 900) {
     var firstNav = document.querySelector('.mnav-item');
     if (firstNav) firstNav.click();
@@ -1466,13 +1410,13 @@ function showApp(email, token) {
 
 function doLogout() {
   sessionStorage.removeItem(SESSION_KEY);
+  sessionStorage.removeItem('windsor_sim_user');
   location.reload();
 }
 
 function showError(msg) {
   var errDiv = document.getElementById('auth-error');
-  errDiv.textContent = msg;
-  errDiv.classList.add('show');
+  if (errDiv) { errDiv.textContent = msg; errDiv.classList.add('show'); }
 }
 
 </script>
