@@ -485,9 +485,14 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
         <div class="field-hint">Section 338 signée 20 juil. · Taux 50 % · s'applique seulement au tonnage des 2 coupeuses</div>
       </div>
       <div class="field">
-        <div class="field-hdr"><span class="field-lbl">Tonnage des 2 coupeuses (taxé)</span><span class="field-val" id="lpt">277 400 t</span></div>
-        <input type="range" id="sl-pt" min="0" max="700000" step="5000" value="277400">
-        <div class="field-hint">Seules les tonnes des <strong>2 coupeuses</strong> (Will 300 t/j + Billy 460 t/j = 760 t/j × 365 j; feuilles, 4802.56.70) sont taxées dès le 30 oct. — le reste de l'usine ne l'est pas</div>
+        <div class="field-hdr"><span class="field-lbl">Willy (feuilles coupées)</span><span class="field-val" id="lwi">300 t/j</span></div>
+        <input type="range" id="sl-wi" min="0" max="1000" step="10" value="300">
+        <div class="field-hint">Taxé dès le 30 oct. (HTS 4802.56.70) · budget 300 t/jour</div>
+      </div>
+      <div class="field">
+        <div class="field-hdr"><span class="field-lbl">Billy (feuilles coupées)</span><span class="field-val" id="lbi">460 t/j</span></div>
+        <input type="range" id="sl-bi" min="0" max="1000" step="10" value="460">
+        <div class="field-hint">Taxé dès le 30 oct. · budget 460 t/jour · total des 2 machines : <span id="coup-tot">277 400 t/an</span> (365 j)</div>
       </div>
       <div class="field">
         <div class="field-hdr"><span class="field-lbl">Transfert tarifaire</span></div>
@@ -706,10 +711,15 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
             <div class="field-hint">Section 338 signée 20 juil. · Taux 50 % · s'applique seulement au tonnage des 2 coupeuses</div>
           </div>
               <div class="field">
-                <div class="field-hdr"><span class="field-lbl">Tonnage des 2 coupeuses (taxé)</span><span class="field-val" id="lpt2">277 400 t</span></div>
-            <input type="range" id="sl-pt2" min="0" max="700000" step="5000" value="277400">
-                <div class="field-hint">Seules les tonnes des <strong>2 coupeuses</strong> (Will 300 t/j + Billy 460 t/j = 760 t/j × 365 j; feuilles, 4802.56.70) sont taxées dès le 30 oct. — le reste de l'usine ne l'est pas</div>
-          </div>
+        <div class="field-hdr"><span class="field-lbl">Willy (feuilles coupées)</span><span class="field-val" id="lwi2">300 t/j</span></div>
+        <input type="range" id="sl-wi2" min="0" max="1000" step="10" value="300">
+        <div class="field-hint">Taxé dès le 30 oct. (HTS 4802.56.70) · budget 300 t/jour</div>
+      </div>
+      <div class="field">
+        <div class="field-hdr"><span class="field-lbl">Billy (feuilles coupées)</span><span class="field-val" id="lbi2">460 t/j</span></div>
+        <input type="range" id="sl-bi2" min="0" max="1000" step="10" value="460">
+        <div class="field-hint">Taxé dès le 30 oct. · budget 460 t/jour · total des 2 machines : <span id="coup-tot2">277 400 t/an</span> (365 j)</div>
+      </div>
           <div class="field">
             <div class="field-hdr"><span class="field-lbl">Transfert tarifaire</span></div>
             <div class="toggle">
@@ -779,15 +789,16 @@ let S = {
   vol:645000, prix:1513, marge:21, cout:615,
   droits:0, surtaxe:0, trans:'client', elast:-0.5,
   hausse:0, masse:96, taux:1.383,
-  tarifCA:0, partIntrants:7, tonnesCoup:277400
+  tarifCA:0, partIntrants:7, willy:300, billy:460
 };
 
+const JOURS_COUP = 365; // jours d'opération supposés pour Willy et Billy
 const SC = {
-  base:  {vol:642000,prix:1487,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,tonnesCoup:277400},
-  avant: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,tonnesCoup:277400},
-  post:  {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,tonnesCoup:277400},
-  guerre:{vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'export',elast:-0.8,hausse:0,masse:96,taux:1.383,tarifCA:50,partIntrants:7,tonnesCoup:645000},
-  oct30: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,tonnesCoup:277400},
+  base:  {vol:642000,prix:1487,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,willy:300,billy:460},
+  avant: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,willy:300,billy:460},
+  post:  {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,willy:300,billy:460},
+  guerre:{vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'export',elast:-0.8,hausse:0,masse:96,taux:1.383,tarifCA:50,partIntrants:7,willy:1000,billy:1000},
+  oct30: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,willy:300,billy:460},
 };
 
 // ═══ FORMAT ══════════════════════════════════════════════════════════════
@@ -801,10 +812,11 @@ function calc() {
   const s = S;
 
   // ── Tarifs US ──
-  // tonnesCoup = tonnage annuel passant par les 2 coupeuses (feuilles coupées, HTS 4802.56.70),
+  // Willy + Billy (t/jour) × jours = tonnage annuel des 2 machines à feuilles coupées (feuilles coupées, HTS 4802.56.70),
   // seul tonnage visé par la Section 338 dès le 30 oct. 2026. w = part du volume total.
   const dt   = s.droits + s.surtaxe;
-  const w    = s.vol>0 ? Math.min(1, Math.max(0, (s.tonnesCoup===undefined?s.vol:s.tonnesCoup)/s.vol)) : 0;
+  const tonnesCoup = ((s.willy||0)+(s.billy||0))*JOURS_COUP; // t/an des 2 machines à feuilles coupées
+  const w    = s.vol>0 ? Math.min(1, Math.max(0, tonnesCoup/s.vol)) : 0;
   const tPTt = s.prix * dt / 100;               // droits $/t sur les tonnes taxées
   let pCt, pNt;                                  // prix client / net sur tonnes taxées
   if (s.trans==='client')      { pCt=s.prix+tPTt;     pNt=s.prix; }
@@ -860,7 +872,7 @@ function calc() {
   const mBase = s.marge;
   const seuil = Math.max(0, (s.prix-s.cout)/s.prix*100 - s.droits);
   return {
-    dt, tPT, pC, pN, varPrix, volP, perte,
+    dt, tPT, pC, pN, varPrix, volP, perte, tonnesCoup, w,
     ajustMO, ajustCT, coutAjuste, coutC, margeAjuste,
     revC, ebitda, ebitdaBase, eBase, mEff, mBase,
     cH, pctE, g4, ratio, seuil
@@ -903,8 +915,10 @@ function render() {
   }
 
   if (az && r.dt>0) {
-    az.innerHTML += '<div class="alert warn"><span class="alert-ico">📄</span><div><strong>Section 338 — '+s.tonnesCoup.toLocaleString('fr-CA')+' t taxées</strong> Surtaxe de '+s.surtaxe+' % appliquée seulement au tonnage des 2 coupeuses (≈ '+f(Math.min(100,s.tonnesCoup/Math.max(1,s.vol)*100),0)+' % du volume). Dès le 30 oct. 2026 : feuilles coupées HTS 4802.56.70 (proclamation du 23 oct.). Tonnage exact à confirmer avec le courtier en douane.</div></div>';
+    az.innerHTML += '<div class="alert warn"><span class="alert-ico">📄</span><div><strong>Section 338 — Willy + Billy : '+Math.round(r.tonnesCoup).toLocaleString('fr-CA')+' t/an taxées</strong> Surtaxe de '+s.surtaxe+' % appliquée seulement aux 2 machines à feuilles coupées (≈ '+f(r.w*100,0)+' % du volume). HTS 4802.56.70, dès le 30 oct. 2026 (proclamation du 23 oct.). Tonnage exact à confirmer avec le courtier en douane.</div></div>';
   }
+
+  ['coup-tot','coup-tot2'].forEach(function(id){ setEl(id, Math.round(r.tonnesCoup).toLocaleString('fr-CA')+' t/an'); });
 
   // ── KPI ─────────────────────────────────────────────────────────────────
   setEl('k-ebitda', f(eM,0)+' M$', 'kpi-val', eM<150?'rouge':eM<200?'orange':'vert');
@@ -1267,7 +1281,8 @@ const PAIRS = [
   {key:'hausse',ids:['sl-hausse','sl-hausse2'],lbls:['lh','lh2'],  parse:parseFloat, fmt:v=>v+' %'},
   {key:'masse', ids:['sl-masse','sl-masse2'],  lbls:['lma','lma2'],parse:parseFloat, fmt:v=>Math.round(v)+' M$'},
   {key:'taux',  ids:['sl-taux','sl-taux2'],    lbls:['lt','lt2'],  parse:parseFloat, fmt:v=>v.toFixed(3)},
-  {key:'tonnesCoup',ids:['sl-pt','sl-pt2'],lbls:['lpt','lpt2'],parse:parseInt,fmt:v=>v.toLocaleString('fr-CA')+' t'},
+  {key:'willy',ids:['sl-wi','sl-wi2'],lbls:['lwi','lwi2'],parse:parseInt,fmt:v=>v+' t/j'},
+  {key:'billy',ids:['sl-bi','sl-bi2'],lbls:['lbi','lbi2'],parse:parseInt,fmt:v=>v+' t/j'},
 ];
 
 PAIRS.forEach(({key,ids,lbls,parse,fmt})=>{
