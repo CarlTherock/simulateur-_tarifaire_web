@@ -939,7 +939,7 @@ function render() {
   setEl('k-prix-d', sg(dP)+Math.round(dP)+' $/t vs base 2025', 'kpi-dlt', dP>0?'pos':'neg');
 
   setEl('k-droits', r.dt+' %', 'kpi-val', r.dt>40?'rouge':r.dt>20?'orange':'vert');
-  setEl('k-droits-d', '+'+f(r.tPT,0)+' $/t de surtaxe', 'kpi-dlt', 'neu');
+  setEl('k-droits-d', r.dt>0 ? 'sur Willy+Billy seulement ('+f(r.w*100,0)+' % du vol.) · moy. +'+f(r.tPT,0)+' $/t' : 'Aucune surtaxe', 'kpi-dlt', 'neu');
 
   setEl('k-marge', f(r.mEff,1)+' %', 'kpi-val', r.mEff<5?'rouge':r.mEff<15?'orange':'vert');
   setEl('k-marge-d', sg(dPP)+f(dPP,1)+' pp vs base', 'kpi-dlt', dPP<0?'neg':'pos');
@@ -984,7 +984,7 @@ function render() {
   }).join('');
 
   // ── SYNTHÈSE ─────────────────────────────────────────────────────────────
-  var synthCtx = r.dt>0 ? ' Dans le contexte tarifaire actuel ('+r.dt+' % de droits), Windsor reste le producteur le moins coûteux du réseau ('+f(r.coutAjuste,0)+' $/t ajusté).' : '';
+  var synthCtx = r.dt>0 ? ' Dans le contexte tarifaire actuel ('+r.dt+' % de droits sur '+f(r.w*100,0)+' % du volume), Windsor reste le producteur le moins coûteux du réseau ('+f(r.coutAjuste,0)+' $/t ajusté).' : '';
   var synthMO  = s.hausse>0 ? ' La hausse salariale de '+s.hausse+' % représente '+f(r.cH,1)+' M$ CAD, soit '+f(r.pctE,1)+' % de l\'EBITDA.' : '';
   document.getElementById('synth').innerHTML =
     'L\'EBITDA estimé de Windsor est de <strong>'+f(eM,0)+' M$ CAD</strong>'
