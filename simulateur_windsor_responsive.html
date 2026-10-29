@@ -440,10 +440,7 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
 
   <!-- SCENARIO STRIP -->
   <div class="sc-strip">
-    <button class="sc-btn" onclick="loadSc('base',this)">📋 Base budget</button>
-    <button class="sc-btn active" onclick="loadSc('avant',this)">📍 Avant 22 août</button>
-    <button class="sc-btn" onclick="loadSc('oct30',this)">📄 Dès le 30 oct. (feuilles)</button>
-    <button class="sc-btn" onclick="loadSc('guerre',this)">⚠️ Escalade</button>
+    <button class="sc-btn active" onclick="loadSc('oct30',this)">📄 Situation dès le 30 oct.</button>
   </div>
 
   <!-- BODY -->
@@ -453,9 +450,19 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
     <aside class="panel-params">
       <div class="slabel">Profil Windsor</div>
       <div class="field">
-        <div class="field-hdr"><span class="field-lbl">Volume annuel UFS</span><span class="field-val" id="lv">645 000 t</span></div>
-        <input type="range" id="sl-vol" min="400000" max="700000" step="5000" value="645000">
-        <div class="field-hint">Budget Windsor 263,8k ADST · Leadership Talk juin 2026 · <strong>Réel 2026 (#7 + #8) : 489 996 t au 29 oct. ≈ 592 000 t/an projeté</strong></div>
+        <div class="field-hdr"><span class="field-lbl">Machine #7 (papier)</span><span class="field-val" id="lm7">901 t/j</span></div>
+        <input type="range" id="sl-m7" min="0" max="1100" step="1" value="901">
+        <div class="field-hint">Budget 1 010 t/j · <strong>réel 2026 : 901 t/j</strong> (268 364 t au 29 oct., 298 j)</div>
+      </div>
+      <div class="field">
+        <div class="field-hdr"><span class="field-lbl">Machine #8 (papier)</span><span class="field-val" id="lm8">770 t/j</span></div>
+        <input type="range" id="sl-m8" min="0" max="900" step="1" value="770">
+        <div class="field-hint">Budget 825 t/j · <strong>réel 2026 : 770 t/j</strong> (221 633 t au 29 oct., 288 j)</div>
+      </div>
+      <div class="field">
+        <div class="field-hdr"><span class="field-lbl">Jours d'opération / an (#7 + #8)</span><span class="field-val" id="ljp">354 j</span></div>
+        <input type="range" id="sl-jp" min="150" max="365" step="1" value="354">
+        <div class="field-hint">Réel : 298 j et 288 j sur 302 j écoulés ≈ <strong>354 j/an</strong> projeté · Volume annuel = <strong><span id="vol-tot">591 600 t</span></strong> (réel au 29 oct. : 489 996 t)</div>
       </div>
       <div class="field">
         <div class="field-hdr"><span class="field-lbl">Prix par tonne</span><span class="field-val" id="lp">1 513 $/t</span></div>
@@ -685,9 +692,19 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
         <div class="carte">
           <div class="carte-t">⚙️ Profil Windsor</div>
           <div class="field">
-            <div class="field-hdr"><span class="field-lbl">Volume annuel UFS</span><span class="field-val" id="lv2">645 000 t</span></div>
-            <input type="range" id="sl-vol2" min="400000" max="700000" step="5000" value="645000">
-            <div class="field-hint">Budget Windsor 263,8k ADST · Leadership Talk juin 2026 · <strong>Réel 2026 (#7 + #8) : 489 996 t au 29 oct. ≈ 592 000 t/an projeté</strong></div>
+            <div class="field-hdr"><span class="field-lbl">Machine #7 (papier)</span><span class="field-val" id="lm72">901 t/j</span></div>
+            <input type="range" id="sl-m72" min="0" max="1100" step="1" value="901">
+            <div class="field-hint">Budget 1 010 t/j · <strong>réel 2026 : 901 t/j</strong> (268 364 t au 29 oct., 298 j)</div>
+          </div>
+          <div class="field">
+            <div class="field-hdr"><span class="field-lbl">Machine #8 (papier)</span><span class="field-val" id="lm82">770 t/j</span></div>
+            <input type="range" id="sl-m82" min="0" max="900" step="1" value="770">
+            <div class="field-hint">Budget 825 t/j · <strong>réel 2026 : 770 t/j</strong> (221 633 t au 29 oct., 288 j)</div>
+          </div>
+          <div class="field">
+            <div class="field-hdr"><span class="field-lbl">Jours d'opération / an (#7 + #8)</span><span class="field-val" id="ljp2">354 j</span></div>
+            <input type="range" id="sl-jp2" min="150" max="365" step="1" value="354">
+            <div class="field-hint">Réel : 298 j et 288 j sur 302 j écoulés ≈ <strong>354 j/an</strong> projeté · Volume annuel = <strong><span id="vol-tot2">591 600 t</span></strong> (réel au 29 oct. : 489 996 t)</div>
           </div>
           <div class="field">
             <div class="field-hdr"><span class="field-lbl">Prix par tonne</span><span class="field-val" id="lp2">1 513 $/t</span></div>
@@ -796,19 +813,16 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
 <script>
 // ═══ STATE ═══════════════════════════════════════════════════════════════
 let S = {
-  vol:645000, prix:1513, marge:21, cout:615,
+  vol:591600, m7:901, m8:770, joursPap:354, prix:1513, marge:21, cout:615,
   droits:0, surtaxe:0, trans:'client', elast:-0.5,
   hausse:0, masse:96, taux:1.383,
   tarifCA:0, partIntrants:7, willy:289, billy:425, joursCoup:289
 };
 
 const SC = {
-  base:  {vol:642000,prix:1487,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,willy:289,billy:425,joursCoup:289},
-  avant: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,willy:289,billy:425,joursCoup:289},
-  post:  {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,willy:289,billy:425,joursCoup:289},
-  guerre:{vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'export',elast:-0.8,hausse:0,masse:96,taux:1.383,tarifCA:50,partIntrants:7,willy:1000,billy:1000,joursCoup:365},
-  oct30: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,willy:289,billy:425,joursCoup:289},
+  oct30: {m7:901,m8:770,joursPap:354,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,willy:289,billy:425,joursCoup:289},
 };
+Object.assign(S, SC.oct30);
 
 // ═══ FORMAT ══════════════════════════════════════════════════════════════
 const f  = (n,d=1) => n.toLocaleString('fr-CA',{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -819,6 +833,8 @@ const sg = n => n>=0?'+':'';
 // Règle d'or : chaque valeur est calculée UNE seule fois ici et passée via r.*
 function calc() {
   const s = S;
+  // Volume annuel = machines #7 + #8 (t/jour) × jours d'opération
+  s.vol = Math.round((s.m7+s.m8)*s.joursPap);
 
   // ── Tarifs US ──
   // Willy + Billy (t/jour, moyenne par jour d'opération) × jours d'opération/an = tonnage annuel des 2 machines à feuilles coupées (feuilles coupées, HTS 4802.56.70),
@@ -931,6 +947,7 @@ function render() {
     az.innerHTML += '<div class="alert warn"><span class="alert-ico">📄</span><div><strong>Section 338 — Willy + Billy : '+Math.round(r.tonnesCoup).toLocaleString('fr-CA')+' t/an taxées</strong> Surtaxe de '+s.surtaxe+' % appliquée seulement à Willy + Billy ('+s.willy+' + '+s.billy+' t/j × '+s.joursCoup+' j ≈ '+f(r.w*100,0)+' % du volume). HTS 4802.56.70, dès le 30 oct. 2026 (proclamation du 23 oct.). Tonnage exact à confirmer avec le courtier en douane.</div></div>';
   }
 
+  ['vol-tot','vol-tot2'].forEach(function(id){ setEl(id, Math.round(S.vol).toLocaleString('fr-CA')+' t'); });
   ['coup-tot','coup-tot2'].forEach(function(id){ setEl(id, Math.round(r.tonnesCoup).toLocaleString('fr-CA')+' t/an'); });
 
   // ── KPI ─────────────────────────────────────────────────────────────────
@@ -1285,7 +1302,9 @@ function setTrans2(t) { setTrans(t); }
 // SLIDERS — paired desktop+mobile
 // ═══════════════════════════════════════════════════════════
 const PAIRS = [
-  {key:'vol',   ids:['sl-vol','sl-vol2'],     lbls:['lv','lv2'],   parse:parseInt,   fmt:v=>(v/1000).toFixed(0)+' 000 t'},
+  {key:'m7',ids:['sl-m7','sl-m72'],lbls:['lm7','lm72'],parse:parseInt,fmt:v=>v+' t/j'},
+  {key:'m8',ids:['sl-m8','sl-m82'],lbls:['lm8','lm82'],parse:parseInt,fmt:v=>v+' t/j'},
+  {key:'joursPap',ids:['sl-jp','sl-jp2'],lbls:['ljp','ljp2'],parse:parseInt,fmt:v=>v+' j'},
   {key:'prix',  ids:['sl-prix','sl-prix2'],   lbls:['lp','lp2'],   parse:parseInt,   fmt:v=>v.toLocaleString('fr-CA')+' $/t'},
   {key:'marge', ids:['sl-marge','sl-marge2'], lbls:['lm','lm2'],   parse:parseInt,   fmt:v=>v+' %'},
   {key:'cout',  ids:['sl-cout','sl-cout2'],   lbls:['lc','lc2'],   parse:parseInt,   fmt:v=>v+' $/t'},
@@ -1341,11 +1360,11 @@ PAIRS.forEach(({key,ids,lbls,parse,fmt})=>{
   });
 });
 
-const DEFAULTS = Object.assign({}, SC.avant);
+const DEFAULTS = Object.assign({}, SC.oct30);
 function resetParams() {
   Object.assign(S, DEFAULTS);
   syncAll();
-  document.querySelectorAll('.sc-btn').forEach(function(b,i){ b.classList.toggle('active', (b.getAttribute('onclick')||'').indexOf("'avant'")>-1); });
+  document.querySelectorAll('.sc-btn').forEach(function(b,i){ b.classList.toggle('active', (b.getAttribute('onclick')||'').indexOf("'oct30'")>-1); });
   render();
 }
 
@@ -1411,7 +1430,7 @@ window.addEventListener('resize', applyResponsive);
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
-render();
+syncAll();
 applyResponsive();
 
 
