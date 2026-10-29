@@ -442,8 +442,8 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
   <div class="sc-strip">
     <button class="sc-btn" onclick="loadSc('base',this)">📋 Base budget</button>
     <button class="sc-btn active" onclick="loadSc('avant',this)">📍 Avant 22 août</button>
-    <button class="sc-btn" onclick="loadSc('post',this)">🚨 22 août–29 oct.</button>
-    <button class="sc-btn" onclick="loadSc('oct30',this)">📄 Dès le 30 oct.</button>
+    <button class="sc-btn" onclick="loadSc('post',this)">🚨 22 août–29 oct. (Windsor non visé)</button>
+    <button class="sc-btn" onclick="loadSc('oct30',this)">📄 Dès le 30 oct. (feuilles)</button>
     <button class="sc-btn" onclick="loadSc('guerre',this)">⚠️ Escalade</button>
   </div>
 
@@ -786,9 +786,9 @@ let S = {
 const SC = {
   base:  {vol:642000,prix:1487,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,partTaxee:100},
   avant: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,partTaxee:100},
-  post:  {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,partTaxee:50},
+  post:  {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,partTaxee:0},
   guerre:{vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'export',elast:-0.8,hausse:0,masse:96,taux:1.383,tarifCA:50,partIntrants:7,partTaxee:100},
-  oct30: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,partTaxee:100},
+  oct30: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,partTaxee:50},
 };
 
 // ═══ FORMAT ══════════════════════════════════════════════════════════════
