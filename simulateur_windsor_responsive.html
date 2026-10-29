@@ -482,12 +482,12 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
       <div class="field">
         <div class="field-hdr"><span class="field-lbl">Surtaxe additionnelle</span><span class="field-val" id="ls">0 %</span></div>
         <input type="range" id="sl-surtaxe" min="0" max="100" step="5" value="0">
-        <div class="field-hint">Section 338 signée 20 juil. · Taux 50 % · s'applique à la « part du volume taxée » ci-dessous</div>
+        <div class="field-hint">Section 338 signée 20 juil. · Taux 50 % · s'applique seulement au tonnage des 2 coupeuses</div>
       </div>
       <div class="field">
-        <div class="field-hdr"><span class="field-lbl">Part du volume taxée</span><span class="field-val" id="lpt">100 %</span></div>
-        <input type="range" id="sl-pt" min="0" max="100" step="5" value="100">
-        <div class="field-hint">Rouleaux (4802.55) dès 22 août · <strong>Feuilles coupées (4802.56.70) dès le 30 oct.</strong> — proclamation du 23 oct. 2026</div>
+        <div class="field-hdr"><span class="field-lbl">Tonnage des 2 coupeuses (taxé)</span><span class="field-val" id="lpt">320 000 t</span></div>
+        <input type="range" id="sl-pt" min="0" max="700000" step="5000" value="320000">
+        <div class="field-hint">Seules les tonnes des <strong>2 coupeuses</strong> (feuilles, 4802.56.70) sont taxées dès le 30 oct. — le reste de l'usine ne l'est pas</div>
       </div>
       <div class="field">
         <div class="field-hdr"><span class="field-lbl">Transfert tarifaire</span></div>
@@ -703,12 +703,12 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
           <div class="field">
             <div class="field-hdr"><span class="field-lbl">Surtaxe additionnelle</span><span class="field-val" id="ls2">0 %</span></div>
             <input type="range" id="sl-surtaxe2" min="0" max="100" step="5" value="0">
-            <div class="field-hint">Section 338 signée 20 juil. · Taux 50 % · s'applique à la « part du volume taxée » ci-dessous</div>
+            <div class="field-hint">Section 338 signée 20 juil. · Taux 50 % · s'applique seulement au tonnage des 2 coupeuses</div>
           </div>
               <div class="field">
-                <div class="field-hdr"><span class="field-lbl">Part du volume taxée</span><span class="field-val" id="lpt2">100 %</span></div>
-            <input type="range" id="sl-pt2" min="0" max="100" step="5" value="100">
-                <div class="field-hint">Rouleaux (4802.55) dès 22 août · <strong>Feuilles coupées (4802.56.70) dès le 30 oct.</strong> — proclamation du 23 oct. 2026</div>
+                <div class="field-hdr"><span class="field-lbl">Tonnage des 2 coupeuses (taxé)</span><span class="field-val" id="lpt2">320 000 t</span></div>
+            <input type="range" id="sl-pt2" min="0" max="700000" step="5000" value="320000">
+                <div class="field-hint">Seules les tonnes des <strong>2 coupeuses</strong> (feuilles, 4802.56.70) sont taxées dès le 30 oct. — le reste de l'usine ne l'est pas</div>
           </div>
           <div class="field">
             <div class="field-hdr"><span class="field-lbl">Transfert tarifaire</span></div>
@@ -779,15 +779,15 @@ let S = {
   vol:645000, prix:1513, marge:21, cout:615,
   droits:0, surtaxe:0, trans:'client', elast:-0.5,
   hausse:0, masse:96, taux:1.383,
-  tarifCA:0, partIntrants:7, partTaxee:100
+  tarifCA:0, partIntrants:7, tonnesCoup:320000
 };
 
 const SC = {
-  base:  {vol:642000,prix:1487,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,partTaxee:100},
-  avant: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,partTaxee:100},
-  post:  {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,partTaxee:0},
-  guerre:{vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'export',elast:-0.8,hausse:0,masse:96,taux:1.383,tarifCA:50,partIntrants:7,partTaxee:100},
-  oct30: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,partTaxee:50},
+  base:  {vol:642000,prix:1487,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,tonnesCoup:320000},
+  avant: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,tonnesCoup:320000},
+  post:  {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,tonnesCoup:320000},
+  guerre:{vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'export',elast:-0.8,hausse:0,masse:96,taux:1.383,tarifCA:50,partIntrants:7,tonnesCoup:645000},
+  oct30: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,tonnesCoup:320000},
 };
 
 // ═══ FORMAT ══════════════════════════════════════════════════════════════
@@ -801,10 +801,10 @@ function calc() {
   const s = S;
 
   // ── Tarifs US ──
-  // partTaxee = part du volume Windsor dont les lignes tarifaires HTS sont visées
-  // par la Section 338 (rouleaux dès le 22 août; feuilles coupées 4802.56.70 dès le 30 oct.)
+  // tonnesCoup = tonnage annuel passant par les 2 coupeuses (feuilles coupées, HTS 4802.56.70),
+  // seul tonnage visé par la Section 338 dès le 30 oct. 2026. w = part du volume total.
   const dt   = s.droits + s.surtaxe;
-  const w    = Math.min(1, Math.max(0, (s.partTaxee===undefined?100:s.partTaxee)/100));
+  const w    = s.vol>0 ? Math.min(1, Math.max(0, (s.tonnesCoup===undefined?s.vol:s.tonnesCoup)/s.vol)) : 0;
   const tPTt = s.prix * dt / 100;               // droits $/t sur les tonnes taxées
   let pCt, pNt;                                  // prix client / net sur tonnes taxées
   if (s.trans==='client')      { pCt=s.prix+tPTt;     pNt=s.prix; }
@@ -903,7 +903,7 @@ function render() {
   }
 
   if (az && r.dt>0) {
-    az.innerHTML += '<div class="alert warn"><span class="alert-ico">📄</span><div><strong>Section 338 — '+s.partTaxee+' % du volume visé</strong> Surtaxe de '+s.surtaxe+' % appliquée à '+s.partTaxee+' % des tonnes (≈ '+Math.round(s.vol*s.partTaxee/100/1000)+' 000 t). Dès le 30 oct. 2026 : feuilles coupées HTS 4802.56.70 ajoutées (proclamation du 23 oct.). Part exacte à confirmer avec le courtier en douane.</div></div>';
+    az.innerHTML += '<div class="alert warn"><span class="alert-ico">📄</span><div><strong>Section 338 — '+s.tonnesCoup.toLocaleString('fr-CA')+' t taxées</strong> Surtaxe de '+s.surtaxe+' % appliquée seulement au tonnage des 2 coupeuses (≈ '+f(Math.min(100,s.tonnesCoup/Math.max(1,s.vol)*100),0)+' % du volume). Dès le 30 oct. 2026 : feuilles coupées HTS 4802.56.70 (proclamation du 23 oct.). Tonnage exact à confirmer avec le courtier en douane.</div></div>';
   }
 
   // ── KPI ─────────────────────────────────────────────────────────────────
@@ -1267,7 +1267,7 @@ const PAIRS = [
   {key:'hausse',ids:['sl-hausse','sl-hausse2'],lbls:['lh','lh2'],  parse:parseFloat, fmt:v=>v+' %'},
   {key:'masse', ids:['sl-masse','sl-masse2'],  lbls:['lma','lma2'],parse:parseFloat, fmt:v=>Math.round(v)+' M$'},
   {key:'taux',  ids:['sl-taux','sl-taux2'],    lbls:['lt','lt2'],  parse:parseFloat, fmt:v=>v.toFixed(3)},
-  {key:'partTaxee',ids:['sl-pt','sl-pt2'],lbls:['lpt','lpt2'],parse:parseInt,fmt:v=>v+' %'},
+  {key:'tonnesCoup',ids:['sl-pt','sl-pt2'],lbls:['lpt','lpt2'],parse:parseInt,fmt:v=>v.toLocaleString('fr-CA')+' t'},
 ];
 
 PAIRS.forEach(({key,ids,lbls,parse,fmt})=>{
