@@ -442,7 +442,8 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
   <div class="sc-strip">
     <button class="sc-btn" onclick="loadSc('base',this)">📋 Base budget</button>
     <button class="sc-btn active" onclick="loadSc('avant',this)">📍 Avant 22 août</button>
-    <button class="sc-btn" onclick="loadSc('post',this)">🚨 Dès le 22 août</button>
+    <button class="sc-btn" onclick="loadSc('post',this)">🚨 22 août–29 oct.</button>
+    <button class="sc-btn" onclick="loadSc('oct30',this)">📄 Dès le 30 oct.</button>
     <button class="sc-btn" onclick="loadSc('guerre',this)">⚠️ Escalade</button>
   </div>
 
@@ -482,7 +483,12 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
       <div class="field">
         <div class="field-hdr"><span class="field-lbl">Surtaxe additionnelle</span><span class="field-val" id="ls">0 %</span></div>
         <input type="range" id="sl-surtaxe" min="0" max="100" step="5" value="0">
-        <div class="field-hint">Section 338 signée 20 juil. · En vigueur 22 août 2026 · HTS 4802.55</div>
+        <div class="field-hint">Section 338 signée 20 juil. · Taux 50 % · s'applique à la « part du volume taxée » ci-dessous</div>
+      </div>
+      <div class="field">
+        <div class="field-hdr"><span class="field-lbl">Part du volume taxée</span><span class="field-val" id="lpt">100 %</span></div>
+        <input type="range" id="sl-pt" min="0" max="100" step="5" value="100">
+        <div class="field-hint">Rouleaux (4802.55) dès 22 août · <strong>Feuilles coupées (4802.56.70) dès le 30 oct.</strong> — proclamation du 23 oct. 2026</div>
       </div>
       <div class="field">
         <div class="field-hdr"><span class="field-lbl">Transfert tarifaire</span></div>
@@ -516,6 +522,7 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
       <div class="field">
         <div class="field-hdr"><span class="field-lbl">Taux USD/CAD</span><span class="field-val" id="lt">1,383</span></div>
         <input type="range" id="sl-taux" min="1.20" max="1.60" step="0.005" value="1.383">
+        <button onclick="fetchTaux()" style="margin-top:6px;width:100%;padding:8px;background:var(--vert-pale);border:1.5px solid var(--vert-bdr);border-radius:8px;font-size:11px;font-weight:600;color:var(--vert);cursor:pointer;font-family:var(--sans)">🔄 Mettre à jour le taux en direct</button>
       </div>
       <hr class="dv">
       <div class="slabel">Contre-tarifs canadiens</div>
@@ -536,9 +543,9 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
         <strong>Sources</strong><br>
         Prix F2 : <strong>1 513 $/t</strong> (+26 $ vs budget)<br>
         Coût Windsor : <strong>615 $/t</strong> — #1 réseau<br>
-        Section 338 : <strong>50 % dès le 22 août 2026</strong><br>
+        Section 338 : <strong>50 % dès le 22 août 2026</strong> · <strong>élargie aux feuilles coupées le 30 oct. 2026</strong><br>
         🍁 Contre-tarifs CA : <strong>8 sept. 2026</strong> · Acier, chimiques, équipements<br>
-        HTS 4802.55 (UFS) · Indép. CUSMA
+        HTS 4802.55 (rouleaux) · 4802.56.70 (feuilles, dès 30 oct.) · Indép. CUSMA
       </div>
     </aside>
 
@@ -697,7 +704,12 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
           <div class="field">
             <div class="field-hdr"><span class="field-lbl">Surtaxe additionnelle</span><span class="field-val" id="ls2">0 %</span></div>
             <input type="range" id="sl-surtaxe2" min="0" max="100" step="5" value="0">
-            <div class="field-hint">Section 338 signée 20 juil. · En vigueur 22 août 2026 · HTS 4802.55</div>
+            <div class="field-hint">Section 338 signée 20 juil. · Taux 50 % · s'applique à la « part du volume taxée » ci-dessous</div>
+          </div>
+              <div class="field">
+                <div class="field-hdr"><span class="field-lbl">Part du volume taxée</span><span class="field-val" id="lpt2">100 %</span></div>
+            <input type="range" id="sl-pt2" min="0" max="100" step="5" value="100">
+                <div class="field-hint">Rouleaux (4802.55) dès 22 août · <strong>Feuilles coupées (4802.56.70) dès le 30 oct.</strong> — proclamation du 23 oct. 2026</div>
           </div>
           <div class="field">
             <div class="field-hdr"><span class="field-lbl">Transfert tarifaire</span></div>
@@ -768,14 +780,15 @@ let S = {
   vol:645000, prix:1513, marge:21, cout:615,
   droits:0, surtaxe:0, trans:'client', elast:-0.5,
   hausse:0, masse:96, taux:1.383,
-  tarifCA:0, partIntrants:7
+  tarifCA:0, partIntrants:7, partTaxee:100
 };
 
 const SC = {
-  base:  {vol:642000,prix:1487,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7},
-  avant: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7},
-  post:  {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7},
-  guerre:{vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'export',elast:-0.8,hausse:0,masse:96,taux:1.383,tarifCA:50,partIntrants:7},
+  base:  {vol:642000,prix:1487,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,partTaxee:100},
+  avant: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,partTaxee:100},
+  post:  {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,partTaxee:50},
+  guerre:{vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'export',elast:-0.8,hausse:0,masse:96,taux:1.383,tarifCA:50,partIntrants:7,partTaxee:100},
+  oct30: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,partTaxee:100},
 };
 
 // ═══ FORMAT ══════════════════════════════════════════════════════════════
@@ -789,17 +802,28 @@ function calc() {
   const s = S;
 
   // ── Tarifs US ──
+  // partTaxee = part du volume Windsor dont les lignes tarifaires HTS sont visées
+  // par la Section 338 (rouleaux dès le 22 août; feuilles coupées 4802.56.70 dès le 30 oct.)
   const dt   = s.droits + s.surtaxe;
-  const tPT  = s.prix * dt / 100;
-  let pC, pN;
-  if (s.trans==='client')      { pC=s.prix+tPT;     pN=s.prix; }
-  else if (s.trans==='export') { pC=s.prix;          pN=s.prix-tPT; }
-  else                         { pC=s.prix+tPT*0.5; pN=s.prix-tPT*0.5; }
+  const w    = Math.min(1, Math.max(0, (s.partTaxee===undefined?100:s.partTaxee)/100));
+  const tPTt = s.prix * dt / 100;               // droits $/t sur les tonnes taxées
+  let pCt, pNt;                                  // prix client / net sur tonnes taxées
+  if (s.trans==='client')      { pCt=s.prix+tPTt;     pNt=s.prix; }
+  else if (s.trans==='export') { pCt=s.prix;          pNt=s.prix-tPTt; }
+  else                         { pCt=s.prix+tPTt*0.5; pNt=s.prix-tPTt*0.5; }
 
-  // ── Élasticité ──
+  // ── Élasticité (calculée séparément sur tonnes taxées / non taxées) ──
+  const varU  = (s.prix-1487)/1487;
+  const varT  = (pCt-1487)/1487;
+  const volU  = s.vol*(1-w)*Math.max(0, 1+s.elast*varU);
+  const volT  = s.vol*w*Math.max(0, 1+s.elast*varT);
+  const volP  = volU + volT;
+  const perte = s.vol>0 ? (s.vol-volP)/s.vol*100 : 0;
+  // Prix moyens pondérés par le volume projeté
+  const pC    = volP>0 ? (volU*s.prix + volT*pCt)/volP : s.prix;
+  const pN    = volP>0 ? (volU*s.prix + volT*pNt)/volP : s.prix;
+  const tPT   = tPTt*w;                          // droits moyens $/t sur le volume total
   const varPrix = (pC-1487)/1487;
-  const volP    = Math.max(0, s.vol*(1+s.elast*varPrix));
-  const perte   = (s.vol-volP)/s.vol*100;
 
   // ── Contre-tarifs CA sur intrants US ──
   // Coût complet implicite = prix × (1 - marge/100)
@@ -877,6 +901,10 @@ function render() {
     az.innerHTML = '<div class="alert ok"><span class="alert-ico">✅</span><div><strong>Position relativement stable</strong> Marge '+f(r.mEff,1)+' % · Perte volume '+f(r.perte,1)+' % · Windsor reste le producteur le moins coûteux du réseau.</div></div>';
   } else {
     az.innerHTML = '<div class="alert ok"><span class="alert-ico">✅</span><div><strong>Position optimale</strong> Marge EBITDA '+f(s.marge,0)+' % · Coût de production le plus bas du réseau Domtar · Hausse salariale : '+s.hausse+' %</div></div>';
+  }
+
+  if (az && r.dt>0) {
+    az.innerHTML += '<div class="alert warn"><span class="alert-ico">📄</span><div><strong>Section 338 — '+s.partTaxee+' % du volume visé</strong> Surtaxe de '+s.surtaxe+' % appliquée à '+s.partTaxee+' % des tonnes (≈ '+Math.round(s.vol*s.partTaxee/100/1000)+' 000 t). Dès le 30 oct. 2026 : feuilles coupées HTS 4802.56.70 ajoutées (proclamation du 23 oct.). Part exacte à confirmer avec le courtier en douane.</div></div>';
   }
 
   // ── KPI ─────────────────────────────────────────────────────────────────
@@ -1240,6 +1268,7 @@ const PAIRS = [
   {key:'hausse',ids:['sl-hausse','sl-hausse2'],lbls:['lh','lh2'],  parse:parseFloat, fmt:v=>v+' %'},
   {key:'masse', ids:['sl-masse','sl-masse2'],  lbls:['lma','lma2'],parse:parseFloat, fmt:v=>Math.round(v)+' M$'},
   {key:'taux',  ids:['sl-taux','sl-taux2'],    lbls:['lt','lt2'],  parse:parseFloat, fmt:v=>v.toFixed(3)},
+  {key:'partTaxee',ids:['sl-pt','sl-pt2'],lbls:['lpt','lpt2'],parse:parseInt,fmt:v=>v+' %'},
 ];
 
 PAIRS.forEach(({key,ids,lbls,parse,fmt})=>{
@@ -1283,6 +1312,33 @@ PAIRS.forEach(({key,ids,lbls,parse,fmt})=>{
     render();
   });
 });
+
+const DEFAULTS = Object.assign({}, SC.avant);
+function resetParams() {
+  Object.assign(S, DEFAULTS);
+  syncAll();
+  document.querySelectorAll('.sc-btn').forEach(function(b,i){ b.classList.toggle('active', (b.getAttribute('onclick')||'').indexOf("'avant'")>-1); });
+  render();
+}
+
+async function fetchTaux() {
+  const btns = document.querySelectorAll('button[onclick="fetchTaux()"]');
+  btns.forEach(b=>{ b.dataset.t=b.textContent; b.textContent='⏳ Mise à jour…'; });
+  try {
+    const ctl = new AbortController(); const to=setTimeout(()=>ctl.abort(),8000);
+    const resp = await fetch('https://open.er-api.com/v6/latest/USD',{signal:ctl.signal});
+    clearTimeout(to);
+    const j = await resp.json();
+    const v = j && j.rates && j.rates.CAD;
+    if (!v || v<1.0 || v>2.0) throw new Error('taux invalide');
+    S.taux = Math.round(v*1000)/1000;
+    syncAll(); render();
+    btns.forEach(b=>{ b.textContent='✅ Taux mis à jour : '+S.taux.toFixed(3); });
+  } catch(e) {
+    btns.forEach(b=>{ b.textContent='⚠️ Taux indisponible — ajustez le curseur'; });
+  }
+  setTimeout(()=>btns.forEach(b=>{ b.textContent=b.dataset.t||'🔄 Mettre à jour le taux en direct'; }),4000);
+}
 
 function syncAll() {
   PAIRS.forEach(({key,ids,lbls,fmt})=>{
