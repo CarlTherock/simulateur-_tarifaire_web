@@ -857,10 +857,14 @@ function calc() {
   const margeAjuste = Math.max(0, s.marge - (ajustCT/s.prix*100));
 
   // ── Finances Windsor ──
-  const revC    = pN * volP * s.taux;
+  const revC    = pN * volP * s.taux;               // revenus nets (après droits absorbés)
+  const revBrut = s.prix * volP * s.taux;           // revenus au prix catalogue, avant droits
   const coutC   = coutAjuste * volP * s.taux;
-  // EBITDA de base = revenus × marge ajustée (sans hausse salariale)
-  const ebitdaBase = revC * margeAjuste / 100;
+  // Droits US ABSORBÉS par Windsor (mode Exportateur / 50-50), en $ CAD : sortent de l'EBITDA
+  // dollar pour dollar (une baisse de prix nette ne passe pas par la marge %)
+  const impactTarifCAD = volT * (s.prix - pNt) * s.taux;
+  // EBITDA de base = revenus bruts × marge ajustée − droits absorbés (sans hausse salariale)
+  const ebitdaBase = revBrut * margeAjuste / 100 - impactTarifCAD;
   // EBITDA de référence (sans tarifs ni ajustements)
   const eBase   = s.prix * s.vol * s.taux * s.marge / 100;
 
@@ -868,14 +872,14 @@ function calc() {
   // cH = coût direct annuel de la hausse (M$ CAD)
   const cH      = s.masse * s.hausse / 100;
   // EBITDA après convention = EBITDA base - coût direct hausse
-  const ebitda  = Math.max(0, ebitdaBase - cH*1e6);
+  const ebitda  = ebitdaBase - cH*1e6; // peut être négatif (perte)
   // % de l'EBITDA de BASE (avant hausse) — c'est le bon dénominateur pour la négo
   const pctE    = ebitdaBase > 0 ? cH / (ebitdaBase/1e6) * 100 : 999;
   // Impact en $/t = cH converti en USD par tonne (= ajustMO_pre)
   const ajustMO = ajustMO_pre;
 
   // ── Autres ──
-  const g4    = ebitdaBase/1e6 * 4/52;  // grève 4 sem. sur EBITDA base
+  const g4    = Math.max(0, ebitdaBase)/1e6 * 4/52;  // grève 4 sem. sur EBITDA base
   const ratio = cH > 0 ? g4/cH : 0;
   const mEff  = margeAjuste;
   const mBase = s.marge;
@@ -883,7 +887,7 @@ function calc() {
   return {
     dt, tPT, pC, pN, varPrix, volP, perte, tonnesCoup, w,
     ajustMO, ajustCT, coutAjuste, coutC, margeAjuste,
-    revC, ebitda, ebitdaBase, eBase, mEff, mBase,
+    revC, revBrut, impactTarifCAD, ebitda, ebitdaBase, eBase, mEff, mBase,
     cH, pctE, g4, ratio, seuil
   };
 }
