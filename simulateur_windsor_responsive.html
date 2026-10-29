@@ -485,9 +485,9 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
         <div class="field-hint">Section 338 signée 20 juil. · Taux 50 % · s'applique seulement au tonnage des 2 coupeuses</div>
       </div>
       <div class="field">
-        <div class="field-hdr"><span class="field-lbl">Tonnage des 2 coupeuses (taxé)</span><span class="field-val" id="lpt">320 000 t</span></div>
-        <input type="range" id="sl-pt" min="0" max="700000" step="5000" value="320000">
-        <div class="field-hint">Seules les tonnes des <strong>2 coupeuses</strong> (feuilles, 4802.56.70) sont taxées dès le 30 oct. — le reste de l'usine ne l'est pas</div>
+        <div class="field-hdr"><span class="field-lbl">Tonnage des 2 coupeuses (taxé)</span><span class="field-val" id="lpt">277 400 t</span></div>
+        <input type="range" id="sl-pt" min="0" max="700000" step="5000" value="277400">
+        <div class="field-hint">Seules les tonnes des <strong>2 coupeuses</strong> (Will 300 t/j + Billy 460 t/j = 760 t/j × 365 j; feuilles, 4802.56.70) sont taxées dès le 30 oct. — le reste de l'usine ne l'est pas</div>
       </div>
       <div class="field">
         <div class="field-hdr"><span class="field-lbl">Transfert tarifaire</span></div>
@@ -706,9 +706,9 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
             <div class="field-hint">Section 338 signée 20 juil. · Taux 50 % · s'applique seulement au tonnage des 2 coupeuses</div>
           </div>
               <div class="field">
-                <div class="field-hdr"><span class="field-lbl">Tonnage des 2 coupeuses (taxé)</span><span class="field-val" id="lpt2">320 000 t</span></div>
-            <input type="range" id="sl-pt2" min="0" max="700000" step="5000" value="320000">
-                <div class="field-hint">Seules les tonnes des <strong>2 coupeuses</strong> (feuilles, 4802.56.70) sont taxées dès le 30 oct. — le reste de l'usine ne l'est pas</div>
+                <div class="field-hdr"><span class="field-lbl">Tonnage des 2 coupeuses (taxé)</span><span class="field-val" id="lpt2">277 400 t</span></div>
+            <input type="range" id="sl-pt2" min="0" max="700000" step="5000" value="277400">
+                <div class="field-hint">Seules les tonnes des <strong>2 coupeuses</strong> (Will 300 t/j + Billy 460 t/j = 760 t/j × 365 j; feuilles, 4802.56.70) sont taxées dès le 30 oct. — le reste de l'usine ne l'est pas</div>
           </div>
           <div class="field">
             <div class="field-hdr"><span class="field-lbl">Transfert tarifaire</span></div>
@@ -779,15 +779,15 @@ let S = {
   vol:645000, prix:1513, marge:21, cout:615,
   droits:0, surtaxe:0, trans:'client', elast:-0.5,
   hausse:0, masse:96, taux:1.383,
-  tarifCA:0, partIntrants:7, tonnesCoup:320000
+  tarifCA:0, partIntrants:7, tonnesCoup:277400
 };
 
 const SC = {
-  base:  {vol:642000,prix:1487,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,tonnesCoup:320000},
-  avant: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,tonnesCoup:320000},
-  post:  {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,tonnesCoup:320000},
+  base:  {vol:642000,prix:1487,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,tonnesCoup:277400},
+  avant: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:0, trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:0, partIntrants:7,tonnesCoup:277400},
+  post:  {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,tonnesCoup:277400},
   guerre:{vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'export',elast:-0.8,hausse:0,masse:96,taux:1.383,tarifCA:50,partIntrants:7,tonnesCoup:645000},
-  oct30: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,tonnesCoup:320000},
+  oct30: {vol:645000,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,tonnesCoup:277400},
 };
 
 // ═══ FORMAT ══════════════════════════════════════════════════════════════
