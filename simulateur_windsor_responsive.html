@@ -440,7 +440,9 @@ hr.dv { border: none; border-top: 1px solid var(--g4); margin: 12px 0; }
 
   <!-- SCENARIO STRIP -->
   <div class="sc-strip">
-    <button class="sc-btn active" onclick="loadSc('oct30',this)">📄 Situation dès le 30 oct.</button>
+    <button class="sc-btn" onclick="loadSc('base',this)">📋 Base budget</button>
+    <button class="sc-btn" onclick="loadSc('avant',this)">📍 Avant 22 août</button>
+    <button class="sc-btn active" onclick="loadSc('oct30',this)">📄 Dès le 30 oct.</button>
   </div>
 
   <!-- BODY -->
@@ -820,6 +822,8 @@ let S = {
 };
 
 const SC = {
+  base:  {m7:1010,m8:825,joursPap:350,prix:1487,marge:21,cout:615,droits:0,surtaxe:0,trans:'client',elast:-0.5,tarifCA:0,hausse:0,masse:96,taux:1.383,partIntrants:7,willy:300,billy:460,joursCoup:289},
+  avant: {m7:1010,m8:825,joursPap:352,prix:1513,marge:21,cout:615,droits:0,surtaxe:0,trans:'client',elast:-0.5,tarifCA:0,hausse:0,masse:96,taux:1.383,partIntrants:7,willy:300,billy:460,joursCoup:289},
   oct30: {m7:901,m8:770,joursPap:354,prix:1513,marge:21,cout:615,droits:0,surtaxe:50,trans:'client',elast:-0.5,hausse:0,masse:96,taux:1.383,tarifCA:25,partIntrants:7,willy:289,billy:425,joursCoup:289},
 };
 Object.assign(S, SC.oct30);
